@@ -15,8 +15,7 @@ public class NameRepository {
      * @return The number of elements in the names array.
      */
     public static int getSize() {
-        //todo: PART 1: implement getSize method
-        return 0;
+        return names.length;
     }
 
 
@@ -26,7 +25,13 @@ public class NameRepository {
      * @param names The array of names to set.
      */
     public static void setNames(final String[] names) {
-        //todo: PART 1: implement setNames method
+
+        NameRepository.names = new String[names.length];
+
+        for (int i = 0; i < names.length; i++) {
+            NameRepository.names[i] = names[i];
+        }
+
     }
 
 
@@ -34,7 +39,7 @@ public class NameRepository {
      * Clears the names array by creating a new empty array.
      */
     public static void clear() {
-        //todo: PART 1: implement clear method
+        NameRepository.names = new String[0];;
     }
 
 
@@ -44,8 +49,7 @@ public class NameRepository {
      * @return A new array containing all elements from the names array.
      */
     public static String[] findAll() {
-        //todo: PART 1: implement findAll method
-        return null;
+        return names.clone();
     }
 
 
@@ -56,7 +60,9 @@ public class NameRepository {
      * @return The matching name if found; otherwise, null.
      */
     public static String find(final String fullName) {
-        //todo: PART 2: implement find method
+        for (String name : names) {
+            if (name.equalsIgnoreCase(fullName)) return name;
+        }
         return null;
     }
 
@@ -68,7 +74,16 @@ public class NameRepository {
      * @return True if the fullName is added successfully; false if it already exists.
      */
     public static boolean add(final String fullName) {
-        //todo: PART 2: implement add method
+        if (find(fullName) == null) {
+            String [] newNames = new String[names.length+1];
+            for (int i = 0; i < names.length; i++) {
+                newNames[i] = names[i];
+            }
+            newNames[names.length] = fullName;
+            names = newNames;
+            return true;
+        }
+
         return false;
     }
 
