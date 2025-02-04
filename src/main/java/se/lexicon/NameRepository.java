@@ -1,5 +1,7 @@
 package se.lexicon;
 
+import java.util.ArrayList;
+
 /**
  * The NameRepository class provides methods to manage a list of names.
  * It offers functionalities such as adding, removing, finding, and updating names.
@@ -29,7 +31,7 @@ public class NameRepository {
         NameRepository.names = new String[names.length];
 
         for (int i = 0; i < names.length; i++) {
-            NameRepository.names[i] = names[i];
+            NameRepository.names[i] = names[i].strip();
         }
 
     }
@@ -61,7 +63,8 @@ public class NameRepository {
      */
     public static String find(final String fullName) {
         for (String name : names) {
-            if (name.equalsIgnoreCase(fullName)) return name;
+            if (name.equalsIgnoreCase(fullName))
+                return name;
         }
         return null;
     }
@@ -75,12 +78,12 @@ public class NameRepository {
      */
     public static boolean add(final String fullName) {
         if (find(fullName) == null) {
-            String [] newNames = new String[names.length+1];
+            String [] newNamesArray = new String[names.length+1];
             for (int i = 0; i < names.length; i++) {
-                newNames[i] = names[i];
+                newNamesArray[i] = names[i];
             }
-            newNames[names.length] = fullName;
-            names = newNames;
+            newNamesArray[names.length] = fullName.strip();
+            names = newNamesArray;
             return true;
         }
 
@@ -95,8 +98,19 @@ public class NameRepository {
      * @return An array containing all matching names.
      */
     public static String[] findByFirstName(final String firstName) {
-        //todo: PART 3: findByFirstName method
-        return null;
+        ArrayList<String> matchingNames = new ArrayList<>();
+        for (String name : names) {
+            if (name.substring(0, name.indexOf(' ')).equalsIgnoreCase(firstName)) {
+                matchingNames.add(name);
+            }
+
+        }
+        if (matchingNames.size() == 0)
+            return null;
+        else {
+            String[] matchingNamesArray = new String[matchingNames.size()];
+            return (matchingNames.toArray(matchingNamesArray));
+        }
     }
 
 
@@ -107,8 +121,19 @@ public class NameRepository {
      * @return An array containing all matching names.
      */
     public static String[] findByLastName(final String lastName) {
-        //todo: PART 3: implement findByLastName method
-        return null;
+        ArrayList<String> matchingNames = new ArrayList<>();
+        for (String name : names) {
+            if (name.substring(name.indexOf(' ')+1).equalsIgnoreCase(lastName)) {
+                matchingNames.add(name);
+            }
+        }
+
+        if (matchingNames.size() == 0)
+            return null;
+        else {
+            String[] matchingNamesArray = new String[matchingNames.size()];
+            return (matchingNames.toArray(matchingNamesArray));
+        }
     }
 
 
@@ -120,8 +145,21 @@ public class NameRepository {
      * @return True if the name is updated successfully; false if the updated name already exists or the original name is not found.
      */
     public static boolean update(final String original, final String updatedName) {
-        //todo: PART 3: implement update method
-        return false;
+        String findOriginal = find(original);
+        if (findOriginal == null) {
+            return false;
+
+        } else if (findOriginal.equalsIgnoreCase(updatedName)) {
+            return false;
+
+        } else {
+            for (int i = 0; i < names.length; i++) {
+                if (names[i].equalsIgnoreCase(original))
+                    names[i] = updatedName;
+            }
+            return true;
+        }
+
     }
 
 
@@ -132,8 +170,35 @@ public class NameRepository {
      * @return True if the name is removed successfully; false if the name is not found in the array.
      */
     public static boolean remove(final String fullName) {
-        //todo: PART 4: implement remove method
-        return false;
+
+        int index = -1;
+
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equalsIgnoreCase(fullName.strip())){
+                index = i;
+                break;
+            }
+        }
+
+        //false if the name is not found in the array
+        if (index == -1) {
+            return false;
+
+        } else {
+            String[] newNamesArray = new String[names.length - 1];
+
+            for (int i = 0; i < newNamesArray.length; i++) {
+
+                if (i >= index){
+                    newNamesArray[i] = names[i+1];
+                    continue;
+                }
+                newNamesArray[i] = names[i];
+            }
+
+            names = newNamesArray;
+            return true;
+        }
     }
 
 
