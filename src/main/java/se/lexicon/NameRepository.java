@@ -63,7 +63,7 @@ public class NameRepository {
      */
     public static String find(final String fullName) {
         for (String name : names) {
-            if (name.equalsIgnoreCase(fullName))
+            if (name.equalsIgnoreCase(fullName.strip()))
                 return name;
         }
         return null;
@@ -78,12 +78,12 @@ public class NameRepository {
      */
     public static boolean add(final String fullName) {
         if (find(fullName) == null) {
-            String [] newNamesArray = new String[names.length+1];
+            String [] tempArray = new String[names.length+1];
             for (int i = 0; i < names.length; i++) {
-                newNamesArray[i] = names[i];
+                tempArray[i] = names[i];
             }
-            newNamesArray[names.length] = fullName.strip();
-            names = newNamesArray;
+            tempArray[names.length] = fullName.strip();
+            names = tempArray;
             return true;
         }
 
@@ -100,17 +100,11 @@ public class NameRepository {
     public static String[] findByFirstName(final String firstName) {
         ArrayList<String> matchingNames = new ArrayList<>();
         for (String name : names) {
-            if (name.substring(0, name.indexOf(' ')).equalsIgnoreCase(firstName)) {
+            if (name.substring(0, name.indexOf(' ')).equalsIgnoreCase(firstName.strip())) {
                 matchingNames.add(name);
             }
-
         }
-        if (matchingNames.size() == 0)
-            return null;
-        else {
-            String[] matchingNamesArray = new String[matchingNames.size()];
-            return (matchingNames.toArray(matchingNamesArray));
-        }
+        return matchingNames.isEmpty() ? null : matchingNames.toArray(new String[matchingNames.size()]);
     }
 
 
@@ -123,17 +117,11 @@ public class NameRepository {
     public static String[] findByLastName(final String lastName) {
         ArrayList<String> matchingNames = new ArrayList<>();
         for (String name : names) {
-            if (name.substring(name.indexOf(' ')+1).equalsIgnoreCase(lastName)) {
+            if (name.substring(name.indexOf(' ')+1).equalsIgnoreCase(lastName.strip())) {
                 matchingNames.add(name);
             }
         }
-
-        if (matchingNames.size() == 0)
-            return null;
-        else {
-            String[] matchingNamesArray = new String[matchingNames.size()];
-            return (matchingNames.toArray(matchingNamesArray));
-        }
+        return matchingNames.isEmpty() ? null : matchingNames.toArray(new String[matchingNames.size()]);
     }
 
 
@@ -146,15 +134,15 @@ public class NameRepository {
      */
     public static boolean update(final String original, final String updatedName) {
         String findOriginal = find(original);
-        if (findOriginal == null) {
-            return false;
+        String findUpdatedName = find(updatedName);
 
-        } else if (findOriginal.equalsIgnoreCase(updatedName)) {
+        //check if the original name is not found or the updated name already exists
+        if (findOriginal == null || findUpdatedName != null) {
             return false;
 
         } else {
             for (int i = 0; i < names.length; i++) {
-                if (names[i].equalsIgnoreCase(original))
+                if (names[i].equalsIgnoreCase(original.strip()))
                     names[i] = updatedName;
             }
             return true;
@@ -188,14 +176,11 @@ public class NameRepository {
             String[] newNamesArray = new String[names.length - 1];
 
             for (int i = 0; i < newNamesArray.length; i++) {
-
-                if (i >= index){
+                if (i >= index)
                     newNamesArray[i] = names[i+1];
-                    continue;
-                }
-                newNamesArray[i] = names[i];
+                else
+                    newNamesArray[i] = names[i];
             }
-
             names = newNamesArray;
             return true;
         }
